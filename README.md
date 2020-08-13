@@ -1,7 +1,7 @@
 # Лучшие практики написания кода на Dart / Flutter
 
 ## Рекомендации
-* Не используй `this, кроме перенаправления на именованный конструктор или для избегания затенения.
+* Не используй `this`, кроме перенаправления на именованный конструктор или для избегания затенения.
 
 ## 
 ```dart
@@ -39,6 +39,33 @@ var points = List<Point>();
 var addresses = Map<String, Address>();
 var counts = Set<int>();
 List<num> ints = <num>[1, 2];
+```
+
+### Наполнение коллекций
+```dart  
+Widget build(BuildContext context) {
+  return Column(children: [
+    Header(),
+    ...buildMainElements(),
+    Footer(),
+  ]);
+} 
+
+Widget build(BuildContext context) {
+  return Column(children: [
+    Text(mainText),
+    if (page != pages.last)
+      FlatButton(child: Text('Next')),
+  ]);
+} 
+
+Widget build(BuildContext context) {
+  return Column(children: [
+    Text(mainText),
+    for (var section in sections)
+      HeadingAction(section.heading),
+  ]);
+}
 ```
 
 ## Использование циклов
@@ -162,9 +189,37 @@ var buffer = StringBuffer()
     .write('three');
 ```
 
+## Расширения для классов
+```dart
+void main() {
+  final cube = Cube(width: 2.0);
+  print('Cube area: ${cube.square}'); // Cube area: 4
+  print('Scaled cube area: ${cube.scale(1.5).square}'); // Scaled cube area: 9
+  print('Scaled cube area: ${(cube ^ 2.5).square}'); // Scaled cube are: 25
+}
+
+class Cube {
+  final double width;
+  Cube({@required this.width});
+}
+
+extension CubeExtensions on Cube {
+  double get square => width * width;
+  Cube operator ^(double factor) => Cube(width: width * factor);
+  Cube scale(double factor) => this ^ factor;
+}
+```
+
 <details><summary>CLICK ME</summary>
 <p>  
 
+## Игра Пятнашки
+
+Можно позапускать и поиграться в DartPad 
+
+https://dartpad.dev/6f17ca1a1f9e135b296c84880de15132
+ 
+<script src="https://gist.github.com/VASSUV/6f17ca1a1f9e135b296c84880de15132.js"></script>
 
 #### Скрытый блок кода!
 
