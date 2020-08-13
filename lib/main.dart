@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'game/GamePage.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,10 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: Scaffold(
-          appBar: AppBar(title: Text('Demo project')),
-          body: Center(child: Text('Flutter Demo Home Page'))
-      ),
+      home: GamePage(),
     );
   }
 }
