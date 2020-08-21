@@ -8,72 +8,80 @@ import 'MyNavigator.dart';
 //}
 
 class NavigationApp extends StatelessWidget {
-  final _selectedPage = ValueNotifier(0);
-
-  final _keys = List.generate(3, (index) => GlobalKey<NavigatorState>());
-
   @override
   Widget build(BuildContext context) {
-    return MyNavigatorLocalProvider(
-      getCurrentKey: () => _keys[_selectedPage.value],
-      child: MaterialApp(
-        navigatorKey: MyNavigator.global.navigatorKey,
-        title: 'Flutter Navigation Demo',
-        home: Scaffold(
-          body: ValueListenableBuilder(
-            valueListenable: _selectedPage,
-            builder: (context, value, child) {
-              return IndexedStack(
-                index: value,
-                children: [
-                  for(int i = 0; i < _keys.length; i++)
-                    Navigator(
-                        key: _keys[i],
-                        onGenerateRoute: (settings) => CupertinoPageRoute(
-                            builder: (context) => NavigationPage(pageValue: i, stackValue: 0)
-                        )
-                    )
-                ],
-              );
-            }
-          ),
-          bottomNavigationBar: ValueListenableBuilder(
-            valueListenable: _selectedPage,
-            builder: (context, value, child) {
-              return BottomNavigationBar (
-                onTap: (page) => _selectedPage.value = page,
-                currentIndex: value,
-                items: const [
-                  BottomNavigationBarItem(title: Text("Call"), icon: Icon(Icons.call)),
-                  BottomNavigationBarItem(title: Text("Message"), icon: Icon(Icons.message)),
-                  BottomNavigationBarItem(title: Text("More"), icon: Icon(Icons.more_horiz))
-                ],
-              );
-            }
-          ),
-        ),
-      ),
+    return MaterialApp(
+      navigatorKey: GlobalNavigator.globalKey,
+      title: 'Flutter Navigation Demo',
+      home: BottomNavigationPage(),
     );
   }
 }
 
-class NavigationPage extends StatefulWidget {
-  int stackValue;
-  int pageValue;
+const tabs = {
+  "Call" : Icons.call,
+  "Message" : Icons.message,
+  "More" : Icons.more_horiz
+};
 
-  NavigationPage({this.pageValue, this.stackValue, Key key}) : super(key: key);
+class BottomNavigationPage extends StatelessWidget { 
+  final _selectedPage = ValueNotifier(0);
 
-  @override
-  _NavigationPageState createState() => _NavigationPageState();
-}
-
-class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.pageValue == 0 ? "Call" : (widget.pageValue == 1 ? "Message" : "More")),
+      body: ValueListenableBuilder(
+          valueListenable: _selectedPage,
+          builder: (context, value, child) {
+            return IndexedStack(
+              index: value,
+              children: buildTabNavigators(),
+            );
+          }
       ),
+      bottomNavigationBar: buildBottomBar(),
+    );
+  }
+
+  List<Widget> buildTabNavigators() => [ 
+    for(int i = 0; i < tabs.length; i++)
+      Navigator(onGenerateRoute: (settings) =>
+          CupertinoPageRoute(builder: (context) =>
+              MyPage(pageValue: i, stackValue: 0)
+          )
+      )
+  ]; 
+
+  ValueListenableBuilder<int> buildBottomBar() {
+    return ValueListenableBuilder(
+        valueListenable: _selectedPage,
+        builder: (context, value, child) {
+          return BottomNavigationBar(
+            onTap: (page) => _selectedPage.value = page,
+            currentIndex: value,
+            items: [
+              for(int i = 0; i < tabs.length; i++)
+                BottomNavigationBarItem(
+                    title: Text(tabs.keys.elementAt(i)),
+                    icon: Icon(tabs[tabs.keys.elementAt(i)])
+                )
+            ],
+          );
+        }
+    );
+  }
+}
+
+class MyPage extends StatelessWidget {
+  int stackValue;
+  int pageValue;
+
+  MyPage({this.pageValue, this.stackValue, Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(tabs.keys.elementAt(pageValue))),
       body: Container(
         height: double.infinity,
         width: double.infinity,
@@ -81,16 +89,26 @@ class _NavigationPageState extends State<NavigationPage> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Страница: ${widget.stackValue}"),
-            MaterialButton(child: Text("Дальше c Bottom Bar"), onPressed: () {
-              MyNavigator.local.goTo(NavigationPage(pageValue: widget.pageValue, stackValue: widget.stackValue + 1));
-            }),
-            MaterialButton(child: Text("Дальше без Bottom Bar"), onPressed: () {
-              MyNavigator.global.goTo(NavigationPage(pageValue: widget.pageValue, stackValue: widget.stackValue + 1));
-            })
+            Text("Страница: $stackValue"),
+            SizedBox(height: 32),
+            MaterialButton(
+                child: Text("Дальше c Bottom Bar"),
+                onPressed: () => nextWith(LocalNavigator(context))
+            ),
+            MaterialButton(
+                child: Text("Дальше без Bottom Bar"),
+                onPressed: () => nextWith(GlobalNavigator.global)
+            )
           ],
         ),
       ),
     );
+  }
+
+  void nextWith(MyNavigator navigator) {
+    navigator.goTo(MyPage(
+        pageValue: pageValue,
+        stackValue: stackValue + 1
+    ));
   }
 }
