@@ -1,16 +1,6 @@
 import 'package:flutter/material.dart';
-import 'game/GamePage.dart';
+import 'navigation/NavigationPage.dart';
 
 void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: GamePage(),
-    );
-  }
+  runApp(NavigationApp());
 }

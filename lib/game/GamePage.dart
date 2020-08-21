@@ -5,6 +5,22 @@ import 'package:flutter/widgets.dart';
 
 import 'GameWidget.dart';
 
+//void main() {
+//  runApp(GameApp());
+//}
+
+class GameApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Game Demo',
+      home: Scaffold(
+        body: GamePage()
+      ),
+    );
+  }
+}
+
 class GamePage extends StatelessWidget {
 
   @override

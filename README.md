@@ -8,6 +8,24 @@
 if(optionalThing?.isEnabled ?? false) { ... } // Good
 if(optionalThing?.isEnabled == true) { ... } // Bad
 ```
+
+## Константы и постоянные
+
+Почитайте разницу между ними - https://habr.com/ru/post/501804/
+
+```dart 
+const myList = [1, 2, 3];
+const myMap = {'one': 1};
+const mySet = {1, 2, 3};
+const myConstNumber = 5;
+
+final myList = [1, 2, 3];
+final myMap = {'one': 1};
+final mySet = {1, 2, 3};
+final myConstNumber = 5; 
+
+```
+
 ## Инициализация объектов
 ```dart
 // Good
@@ -75,7 +93,6 @@ people.forEach(print); // Good
 people.forEach((person) => ...); // Bad
 for (Person person in people) { ... } // Bad
 people.forEach((Person person) => ...) // Bad
-
 ```
 
 ## Локальные функции
@@ -217,9 +234,13 @@ extension CubeExtensions on Cube {
 
 Можно позапускать и поиграться в DartPad 
 
-https://dartpad.dev/6f17ca1a1f9e135b296c84880de15132
- 
-<script src="https://gist.github.com/VASSUV/6f17ca1a1f9e135b296c84880de15132.js"></script>
+https://dartpad.dev/6f17ca1a1f9e135b296c84880de15132 
+
+## Навигация
+
+Локальный и Глобальный навигаторы
+
+https://dartpad.dev/c0129fb43213c46467a4084e61eefdda
 
 #### Скрытый блок кода!
 
